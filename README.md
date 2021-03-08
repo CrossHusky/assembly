@@ -29,11 +29,11 @@
 </tr>
 <tr>
 	<td>DI</td>
-	<td>Index Register</td>
+	<td>Registro Índice</td>
 </tr>
 <tr>
 	<td>SS</td>
-	<td>Registro Índice</td>
+	<td>Segmento de Pila</td>
 </tr>
 <tr>
 	<td>SP</td>
