@@ -1,135 +1,120 @@
-            
-        
-         
-        
-        include 'emu8086.inc'
-        
-       
-        
-        
-       
-         .model large
-         
-         .stack 100h
-        
-        .data 
-        
-        uno dw 0,6,5,1,5,3,8,4,7,890,9,2
-         
-        ;Variable Registers
-        ; si contains value of i 
-        ; DI contains the value of j
-        ; AX contains the size of array 
-        ; BX contaions the size-1 array
-        ; size contains the size of array 
-        
-        size dw 22 
-        swap_var dw 0 
-        v1 dw 0
-        v2 dw 0 
-        
-        ;These variables are used by print array procedure 
-        nsi dw  0
-        nax dw 0
-        ndx dw 0
-        ; End of variables print array procedure 
-       .code 
-        
-        mov ax,@data
-        mov ds,ax
-        
-        main proc 
-               
-            call insertion_sort
-            call print_arr  
-            .EXIT
-        endp main
-        
-        insertion_sort proc 
-          mov si, 2
-          mov ax, size 
-          
-          for_loop:
-            cmp si, ax
-            jg end_for_loop
-                
-             
-             while_loop:
-                mov di, si
-                sub di, 2
-                mov bx, uno[si]
-                 mov cx, uno[di]
-                cmp si, 0
-                jle end_while
-                
-                 
-                 
-                 cmp cx, bx
-                 jle end_while
-                  
-                    mov swap_var, bx 
-                    mov bx, cx
-                    mov cx, swap_var
-                    mov uno[si], bx
-                    mov uno[di], cx
-                    sub si, 2
-                    jmp while_loop
-             end_while:
-            add si, 2
-            jmp for_loop  
-          end_for_loop:
-            RET 
-        endp insertion_sort
-       
-        print_arr proc
-            ; Set the variables, So I wont lost the value of these registers 
-             mov nsi, si
-             mov nax, ax
-             mov ndx, dx
-             mov si, 0 
-             mov ah,2 
-                     
-             mov dl, 0Ah 
-             int 21h
-             mov dl, 0Dh 
-             int 21h 
-              print "So, The array is "
-            start_print:
-                 mov ax, size
-                 cmp si, ax 
-                 
-                 jg end_print 
-                     ; Print the array content
-                        
-                      mov ax, uno[si]
-                      call print_num
-                      
-                      
-                      ;New line and carriage return
-                      
-                      
-                    print ","  
-                    add si,2
-                 jmp start_print 
-                   
-              
-             end_print:
-              mov ah,2 
-                      
-                      mov dl, 0Ah 
-                      int 21h
-                      mov dl, 0Dh 
-                      int 21h  
-                mov si, nsi            
-                mov ax, nax
-                mov dx, ndx 
-                ret 
-                  
-        endp print_arr
-       
-       
-   
-        
-         define_scan_num 
-         define_print_num
-         define_print_num_uns
+include 'emu8086.inc'
+
+.MODEL SMALL
+
+.STACK 100h
+
+.DATA 
+
+;vectorDesordenado   DW  0,630,50,1,5,3,812,24,17,890,9,2,44,256,128,32,10,9999,4,69
+vectorDesordenado   DW  90,70,80,50,60,30,40,10,20,5,4,8,9,7,6,3,99,1,2,0
+varTamaño           DW  38  ;(20*2)-(2) | 20 <- Tamaño del vector | 2 <- Tamaño del elemento |
+varIntercambio      DW  0   ;Insertion Sort va hasta [Tamaño del vector] - [1]
+nSI                 DW  0   ;Entonces, [40 - 2] = [38] 
+nAX                 DW  0   ; vectorDesordenado es el "vector" no ordenado
+nDX                 DW  0   ; SI almacena el valor de i 
+                            ; DI almacena el valor de j
+                            ; AX almacena el tamaño del vector
+                            ; BX almazena el tamaño-1 del vector
+                            ; varTamaño almacena el aamaño del vector
+
+.CODE 
+
+MOV AX, @data
+MOV DS, AX
+
+main PROC 
+
+CALL insertionSort
+;CALL print_arr  
+
+.EXIT
+ENDP main
+
+insertionSort PROC 
+MOV SI, 2
+MOV AX, varTamaño 
+
+for_loop:
+CMP SI, AX
+JG end_for_loop
+
+
+while_loop:
+MOV DI, SI
+SUB DI, 2
+MOV BX, vectorDesordenado[SI]
+MOV CX, vectorDesordenado[DI]
+CMP SI, 0
+JLE end_while
+
+
+
+CMP CX, BX
+JLE end_while
+
+MOV varIntercambio, BX 
+MOV BX, CX
+MOV CX, varIntercambio
+MOV vectorDesordenado[SI], BX
+MOV vectorDesordenado[DI], CX
+SUB SI, 2
+JMP while_loop
+end_while:
+ADD SI, 2
+JMP for_loop  
+end_for_loop:
+RET 
+endp insertionSort
+
+print_arr PROC
+; Set the variables, So I wont lost the value of these registers 
+MOV nSI, SI
+MOV nAX, AX
+MOV nDX, DX
+MOV SI, 0 
+MOV AH,2 
+
+MOV DL, 0Ah 
+INT 21h
+MOV DL, 0Dh 
+INT 21h 
+print "El vector ordenado es: "
+start_print:
+MOV AX, varTamaño
+CMP SI, AX 
+JG end_print 
+; Print the array content
+
+MOV AX, vectorDesordenado[SI]
+CALL print_num
+
+
+;New line and carriage return
+
+
+print " "  
+ADD SI,2
+JMP start_print 
+
+
+end_print:
+MOV ah,2 
+
+MOV DL, 0Ah 
+INT 21h
+MOV DL, 0Dh 
+INT 21h  
+MOV SI, nSI			   
+MOV AX, nAX
+MOV DX, nDX 
+RET 
+
+ENDP print_arr
+
+
+
+;Necesario para usar las funciones de emu8086.inc
+define_scan_num 
+define_print_num
+define_print_num_uns
