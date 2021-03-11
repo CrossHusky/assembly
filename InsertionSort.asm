@@ -9,7 +9,7 @@ MACRO BREAK
 ENDM
 
 MACRO SWAP
-    MOV vectorDesordenado[SI], CX ; Cambio de valores
+    MOV vectorDesordenado[SI], CX
     MOV vectorDesordenado[DI], BX    
 ENDM
 
@@ -20,10 +20,10 @@ ENDM
 .DATA
     ;vectorDesordenado   DW  0,630,50,1,5,3,812,24,17,890,9,2,44,256,128,32,10,9999,4,69
     vectorDesordenado   DW  90,70,80,50,60,30,40,10,20,5,4,8,9,7,6,3,99,1,2,0
-    tamañoVector        DW  38   
+    tamañoVector        DW  40 ; 38  
     
     ;(20*2)-(2) | 20 <- Tamaño del vector | 2 <- Tamaño del elemento |   
-    ; Insertion Sort va hasta [Tamaño del vector - 1]
+    ; Insertion Sort va hasta [Tamaño del vector] o [Tamaño del vector - 1]
     ; Entonces, [40 - 2] = [38] 
     ; vectorDesordenado es el "vector" no ordenado
     ; tamañoVector almacena el tamaño del vector
@@ -53,7 +53,7 @@ insertionSort PROC
 
         for:
             CMP SI, AX                          ; Si SI > AX ir a end_for
-            JG end_for
+            JE end_for
 
             while:
                 MOV DI, SI                      ; Cargo SI a DI
@@ -89,7 +89,7 @@ printArray PROC
 start_print:
     MOV AX, tamañoVector
     CMP SI, AX 
-    JG end_print 
+    JE end_print 
     MOV AX, vectorDesordenado[SI]
     print "["
     CALL print_num
